@@ -33,29 +33,57 @@ let store = {
         return this._state;
     },
 
+    subscribe(observer) {
+        this.callSubscriber = observer;
+    },
+
+    dispatch(action){
+        //action == object
+        //type: 'ADD-POST'
+        if(action.type === 'ADD-POST') {
+            let newPost = {
+                id: 5,
+                message: this._state.profilePage.newPostText,
+                likesCount: 0
+            };
+            this._state.profilePage.posts.push(newPost);
+            this._state.profilePage.newPostText = '';
+            this.callSubscriber(this._state);
+        }else if (action.type === 'UPDATE-NEW-POST-PAGE'){
+            this._state.profilePage.newPostText = action.newText;
+            this.callSubscriber(this._state);
+        }
+    },
+
     callSubscriber() {
     },
 
-    addPost() {
-        let newPost = {
-            id: 5,
-            message: this._state.profilePage.newPostText,
-            likesCount: 0
-        };
-        this._state.profilePage.posts.push(newPost);
-        this._state.profilePage.newPostText = '';
-        this.callSubscriber(this._state);
-    },
-
-    updateNewPostText(newText) {
-        this._state.profilePage.newPostText = newText;
-        this.callSubscriber(this._state);
-    },
-
-    subscribe(observer) {
-        this.callSubscriber = observer;
-    }
+    // addPost() {
+    //     let newPost = {
+    //         id: 5,
+    //         message: this._state.profilePage.newPostText,
+    //         likesCount: 0
+    //     };
+    //     this._state.profilePage.posts.push(newPost);
+    //     this._state.profilePage.newPostText = '';
+    //     this.callSubscriber(this._state);
+    // },
+    //
+    // updateNewPostText(newText) {
+    //     this._state.profilePage.newPostText = newText;
+    //     this.callSubscriber(this._state);
+    // }
 }
 window.store = store;
 
 export default store;
+
+export const addPostActionCreator = () => {
+    return {
+        type: 'ADD-POST'
+    }
+}
+
+export const updateNewPostTextActionCreator = (text) => {
+    return {type: 'UPDATE-NEW-POST-PAGE', newText: text}
+}
